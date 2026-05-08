@@ -29,16 +29,16 @@ export function SectionLabel({ children }: { children: React.ReactNode }) {
 
 export function Showcase() {
   return (
-    <section id="showcase" className="relative py-32 md:py-44 px-6 md:px-12 bg-background">
+    <section id="showcase" className="relative py-20 md:py-44 px-5 md:px-12 bg-background">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-20 reveal">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12 md:mb-20 reveal gap-6">
           <div>
             <SectionLabel>The Showcase</SectionLabel>
-            <h2 className="font-display text-5xl md:text-7xl leading-none max-w-2xl">
+            <h2 className="font-display text-4xl md:text-7xl leading-[1.05] md:leading-none max-w-2xl">
               Editorial nail artistry, signed by hand.
             </h2>
           </div>
-          <p className="mt-6 md:mt-0 max-w-sm text-muted-foreground">
+          <p className="md:mt-0 max-w-sm text-muted-foreground text-sm md:text-base">
             From glossy mirror chromes to bridal couture — every set is finished to the millimeter.
           </p>
         </div>
@@ -72,14 +72,14 @@ export function Showcase() {
 
 export function About() {
   return (
-    <section className="relative py-32 md:py-44 px-6 md:px-12 bg-[var(--beige)]">
-      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+    <section className="relative py-20 md:py-44 px-5 md:px-12 bg-[var(--beige)]">
+      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-10 md:gap-16 items-center">
         <div className="reveal overflow-hidden">
-          <img src={about} alt="Artisan at work" loading="lazy" className="w-full h-[480px] md:h-[640px] object-cover" />
+          <img src={about} alt="Artisan at work" loading="lazy" className="w-full h-[360px] md:h-[640px] object-cover" />
         </div>
         <div className="reveal">
           <SectionLabel>The House</SectionLabel>
-          <h2 className="font-display text-5xl md:text-6xl leading-[1.05]">
+          <h2 className="font-display text-4xl md:text-6xl leading-[1.05]">
             A decade of <em className="text-[var(--burgundy)]">precision,</em> patience and polish.
           </h2>
           <p className="mt-8 text-muted-foreground leading-relaxed">
@@ -120,11 +120,11 @@ const services = [
 
 export function Services() {
   return (
-    <section id="services" className="relative py-32 md:py-44 px-6 md:px-12 bg-background">
+    <section id="services" className="relative py-20 md:py-44 px-5 md:px-12 bg-background">
       <div className="max-w-7xl mx-auto">
-        <div className="reveal max-w-3xl mb-20">
+        <div className="reveal max-w-3xl mb-12 md:mb-20">
           <SectionLabel>The Menu</SectionLabel>
-          <h2 className="font-display text-5xl md:text-7xl leading-[1] text-balance">
+          <h2 className="font-display text-4xl md:text-7xl leading-[1.05] text-balance">
             Services, refined to a ritual.
           </h2>
         </div>
@@ -133,16 +133,17 @@ export function Services() {
             <a
               key={s.title}
               href="#contact"
-              className="reveal group flex items-center justify-between border-b border-foreground/15 py-8 md:py-10 px-2 transition-colors hover:bg-[var(--beige)]/40"
+              className="reveal group grid grid-cols-[auto_1fr_auto] md:flex md:items-center md:justify-between gap-x-4 md:gap-12 border-b border-foreground/15 py-6 md:py-10 px-2 transition-colors hover:bg-[var(--beige)]/40"
             >
-              <div className="flex items-baseline gap-6 md:gap-12">
-                <span className="text-xs text-muted-foreground tabular-nums">0{i + 1}</span>
-                <h3 className="font-display text-3xl md:text-5xl group-hover:text-[var(--burgundy)] transition-colors">
+              <span className="text-xs text-muted-foreground tabular-nums self-center">0{i + 1}</span>
+              <div className="md:flex-1">
+                <h3 className="font-display text-2xl md:text-5xl group-hover:text-[var(--burgundy)] transition-colors">
                   {s.title}
                 </h3>
+                <p className="md:hidden mt-1 text-xs text-muted-foreground">{s.desc}</p>
               </div>
               <div className="hidden md:block max-w-sm text-sm text-muted-foreground text-right">{s.desc}</div>
-              <span className="ml-6 text-[var(--burgundy)] transition-transform group-hover:translate-x-2">→</span>
+              <span className="self-center ml-2 md:ml-6 text-[var(--burgundy)] transition-transform group-hover:translate-x-2">→</span>
             </a>
           ))}
         </div>
@@ -153,11 +154,11 @@ export function Services() {
 
 export function Academy() {
   return (
-    <section id="academy" className="relative py-32 md:py-44 px-6 md:px-12 bg-[var(--beige)]">
-      <div className="max-w-7xl mx-auto grid md:grid-cols-12 gap-12 items-center">
-        <div className="md:col-span-5 reveal">
+    <section id="academy" className="relative py-20 md:py-44 px-5 md:px-12 bg-[var(--beige)]">
+      <div className="max-w-7xl mx-auto grid md:grid-cols-12 gap-10 md:gap-12 items-center">
+        <div className="md:col-span-5 reveal order-2 md:order-1">
           <SectionLabel>The Academy</SectionLabel>
-          <h2 className="font-display text-5xl md:text-6xl leading-[1.05]">
+          <h2 className="font-display text-4xl md:text-6xl leading-[1.05]">
             Train where the <em className="text-[var(--burgundy)]">artists</em> train.
           </h2>
           <p className="mt-8 text-muted-foreground leading-relaxed">
@@ -180,8 +181,8 @@ export function Academy() {
             </a>
           </div>
         </div>
-        <div className="md:col-span-7 reveal">
-          <img src={academy} alt="Academy classroom" loading="lazy" className="w-full h-[420px] md:h-[640px] object-cover" />
+        <div className="md:col-span-7 reveal order-1 md:order-2">
+          <img src={academy} alt="Academy classroom" loading="lazy" className="w-full h-[320px] md:h-[640px] object-cover" />
         </div>
       </div>
     </section>
@@ -196,10 +197,10 @@ const reviews = [
 
 export function Testimonials() {
   return (
-    <section className="relative py-32 md:py-44 px-6 md:px-12 bg-background">
+    <section className="relative py-20 md:py-44 px-5 md:px-12 bg-background">
       <div className="max-w-6xl mx-auto">
         <SectionLabel>Said of Us</SectionLabel>
-        <div className="grid md:grid-cols-3 gap-10 md:gap-16 mt-12">
+        <div className="grid md:grid-cols-3 gap-10 md:gap-16 mt-8 md:mt-12">
           {reviews.map((r) => (
             <figure key={r.name} className="reveal">
               <div className="font-display text-5xl text-[var(--burgundy)] leading-none mb-6">"</div>
@@ -221,19 +222,19 @@ export function Testimonials() {
 export function Instagram() {
   const items = [g1, g2, g3, g4, hand, g1, g2, g3];
   return (
-    <section className="relative py-24 bg-[var(--beige)] overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 mb-12 flex items-end justify-between">
+    <section className="relative py-16 md:py-24 bg-[var(--beige)] overflow-hidden">
+      <div className="max-w-7xl mx-auto px-5 md:px-12 mb-8 md:mb-12 flex items-end justify-between gap-4">
         <div>
           <SectionLabel>@srishtisalon</SectionLabel>
-          <h2 className="font-display text-4xl md:text-5xl">Live from the studio.</h2>
+          <h2 className="font-display text-3xl md:text-5xl">Live from the studio.</h2>
         </div>
         <a href="#" className="text-xs uppercase tracking-[0.25em] border-b border-foreground/40 pb-1 hover:text-[var(--burgundy)] hover:border-[var(--burgundy)] transition">
           Follow
         </a>
       </div>
-      <div className="flex gap-4 animate-marquee w-max">
+      <div className="flex gap-3 md:gap-4 animate-marquee w-max">
         {[...items, ...items].map((src, i) => (
-          <img key={i} src={src} alt="" loading="lazy" className="h-56 md:h-72 w-56 md:w-72 object-cover flex-none" />
+          <img key={i} src={src} alt="" loading="lazy" className="h-44 md:h-72 w-44 md:w-72 object-cover flex-none" />
         ))}
       </div>
     </section>
@@ -243,21 +244,21 @@ export function Instagram() {
 export function Footer() {
   return (
     <section id="contact" className="relative bg-[var(--onyx)] text-[var(--ivory)] grain">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 py-32 md:py-44 text-center">
+      <div className="max-w-7xl mx-auto px-5 md:px-12 py-24 md:py-44 text-center">
         <SectionLabel>Begin</SectionLabel>
-        <h2 className="font-display text-6xl md:text-9xl leading-[0.9] text-balance">
+        <h2 className="font-display text-5xl md:text-9xl leading-[0.9] text-balance">
           Ready for your <em className="text-[var(--champagne)] not-italic">next look?</em>
         </h2>
-        <p className="mt-10 text-white/60 max-w-md mx-auto">
+        <p className="mt-8 md:mt-10 text-white/60 max-w-md mx-auto text-sm md:text-base">
           Book a private session at our atelier or speak with our academy advisor.
         </p>
-        <div className="mt-14 flex flex-wrap gap-4 justify-center">
-          <a href="#" className="bg-[var(--burgundy)] hover:bg-[var(--wine)] px-10 py-5 text-xs uppercase tracking-[0.25em] transition-colors">Book Appointment</a>
-          <a href="#" className="border border-white/30 hover:border-[var(--champagne)] hover:text-[var(--champagne)] px-10 py-5 text-xs uppercase tracking-[0.25em] transition-colors">WhatsApp</a>
-          <a href="#" className="border border-white/30 hover:border-[var(--champagne)] hover:text-[var(--champagne)] px-10 py-5 text-xs uppercase tracking-[0.25em] transition-colors">Instagram</a>
+        <div className="mt-10 md:mt-14 flex flex-wrap gap-3 md:gap-4 justify-center">
+          <a href="#" className="bg-[var(--burgundy)] hover:bg-[var(--wine)] px-6 md:px-10 py-4 md:py-5 text-[10px] md:text-xs uppercase tracking-[0.25em] transition-colors">Book Appointment</a>
+          <a href="#" className="border border-white/30 hover:border-[var(--champagne)] hover:text-[var(--champagne)] px-6 md:px-10 py-4 md:py-5 text-[10px] md:text-xs uppercase tracking-[0.25em] transition-colors">WhatsApp</a>
+          <a href="#" className="border border-white/30 hover:border-[var(--champagne)] hover:text-[var(--champagne)] px-6 md:px-10 py-4 md:py-5 text-[10px] md:text-xs uppercase tracking-[0.25em] transition-colors">Instagram</a>
         </div>
       </div>
-      <div className="border-t border-white/10 px-6 md:px-12 py-8 flex flex-col md:flex-row justify-between gap-4 text-xs uppercase tracking-[0.25em] text-white/50">
+      <div className="border-t border-white/10 px-5 md:px-12 py-6 md:py-8 flex flex-col md:flex-row justify-between gap-3 md:gap-4 text-[10px] md:text-xs uppercase tracking-[0.25em] text-white/50">
         <div>Srishti Salon & Academy</div>
         <div>© {new Date().getFullYear()} — Crafted with care</div>
       </div>
