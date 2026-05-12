@@ -25,7 +25,7 @@ export function Hero() {
     const update = () => setReducedMotion(mq.matches);
     update();
     mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", onchange as never);
+    return () => mq.removeEventListener("change", update);
   }, []);
 
   // Recalibrate stage sizing on resize / orientation
