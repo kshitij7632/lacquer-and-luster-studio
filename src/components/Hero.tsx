@@ -1,77 +1,93 @@
 import { useEffect, useRef } from "react";
 import bottle from "@/assets/bottle.png";
-import drip from "@/assets/drip.png";
 import hand from "@/assets/hand-hero.png";
 import texture from "@/assets/texture.jpg";
 
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const bottleRef = useRef<HTMLImageElement>(null);
-  const dripRef = useRef<HTMLDivElement>(null);
+  const dripRef = useRef<SVGRectElement>(null);
+  const dropRef = useRef<SVGCircleElement>(null);
+  const splashRef = useRef<SVGGElement>(null);
   const handRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLDivElement>(null);
   const bgRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     let raf = 0;
+    let lastP = -1;
+
     const tick = () => {
       raf = 0;
       const sec = sectionRef.current;
       if (!sec) return;
       const rect = sec.getBoundingClientRect();
       const vh = window.innerHeight;
-      const total = sec.offsetHeight - vh;
+      const total = Math.max(1, sec.offsetHeight - vh);
       const p = Math.min(1, Math.max(0, -rect.top / total));
+      if (Math.abs(p - lastP) < 0.0015) return;
+      lastP = p;
 
-      // Stages
-      const s1 = Math.min(1, p / 0.35);                    // bottle tilt
-      const s2 = Math.min(1, Math.max(0, (p - 0.25) / 0.4)); // drip grow
-      const s3 = Math.min(1, Math.max(0, (p - 0.55) / 0.4)); // hand rise
+      // Eased stages
+      const ease = (t: number) => t * t * (3 - 2 * t);
+      const s1 = ease(Math.min(1, p / 0.28));                         // bottle tilt
+      const s2 = ease(Math.min(1, Math.max(0, (p - 0.22) / 0.38)));   // drip extend
+      const drop = Math.min(1, Math.max(0, (p - 0.45) / 0.25));       // droplet falls
+      const s3 = ease(Math.min(1, Math.max(0, (p - 0.6) / 0.3)));     // hand rises
+      const splash = Math.min(1, Math.max(0, (p - 0.72) / 0.15));     // splash
 
-      // Parallax background
       if (bgRef.current) {
-        bgRef.current.style.transform = `translate3d(0, ${p * -80}px, 0) scale(${1 + p * 0.08})`;
+        bgRef.current.style.transform = `translate3d(0, ${p * -60}px, 0) scale(${1 + p * 0.06})`;
       }
 
-      // Title fades & lifts
       if (titleRef.current) {
-        const o = 1 - Math.min(1, p / 0.45);
+        const o = 1 - Math.min(1, p / 0.4);
         titleRef.current.style.opacity = String(o);
-        titleRef.current.style.transform = `translate3d(0, ${p * -60}px, 0)`;
+        titleRef.current.style.transform = `translate3d(0, ${p * -50}px, 0)`;
       }
 
-      // Bottle: tilt and drift down/right
+      // Bottle tips from its neck
       if (bottleRef.current) {
-        const tilt = s1 * 75;
-        const ty = s1 * 60 + s3 * 40;
-        const tx = s1 * 20;
-        const fade = 1 - s3 * 0.6;
+        const tilt = s1 * 78;
+        const tx = s1 * 14;
+        const ty = s1 * 8;
         bottleRef.current.style.transform = `translate3d(${tx}px, ${ty}px, 0) rotate(${tilt}deg)`;
-        bottleRef.current.style.opacity = String(fade);
       }
 
-      // Drip: stretches from bottle towards the hand
+      // Liquid stream stretches; droplet detaches and falls
       if (dripRef.current) {
-        const scale = Math.max(0.001, s2 * 1);
-        dripRef.current.style.transform = `scaleY(${scale})`;
-        dripRef.current.style.opacity = s2 > 0.02 ? "1" : "0";
+        const h = s2 * 100; // % of stage
+        dripRef.current.setAttribute("height", String(h));
+        dripRef.current.style.opacity = s2 > 0.02 ? "0.95" : "0";
+      }
+      if (dropRef.current) {
+        const y = 8 + drop * 92;
+        const r = 1.6 + Math.sin(drop * Math.PI) * 0.6;
+        dropRef.current.setAttribute("cy", String(y));
+        dropRef.current.setAttribute("r", String(r));
+        dropRef.current.style.opacity = drop > 0 && splash < 0.4 ? "1" : "0";
+      }
+      if (splashRef.current) {
+        splashRef.current.style.opacity = String(splash);
+        splashRef.current.style.transform = `scale(${0.6 + splash * 0.6})`;
       }
 
-      // Hand rises from bottom
       if (handRef.current) {
-        const ty = (1 - s3) * 110;
+        const ty = (1 - s3) * 100;
         handRef.current.style.transform = `translate3d(0, ${ty}%, 0)`;
         handRef.current.style.opacity = String(s3);
       }
 
-      // CTA appears at end
       if (ctaRef.current) {
-        const o = Math.min(1, Math.max(0, (p - 0.75) / 0.2));
+        const o = Math.min(1, Math.max(0, (p - 0.82) / 0.15));
         ctaRef.current.style.opacity = String(o);
-        ctaRef.current.style.transform = `translate3d(0, ${(1 - o) * 24}px, 0)`;
+        ctaRef.current.style.transform = `translate3d(0, ${(1 - o) * 20}px, 0)`;
+        ctaRef.current.style.pointerEvents = o > 0.5 ? "auto" : "none";
       }
     };
+
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(tick);
     };
@@ -118,65 +134,107 @@ export function Hero() {
           </a>
         </header>
 
-        {/* Centered title */}
+        {/* Title (top of viewport) */}
         <div
           ref={titleRef}
-          className="absolute inset-x-0 top-[14vh] md:top-[18vh] z-20 text-center px-6 will-change-transform"
+          className="absolute inset-x-0 top-[12vh] md:top-[16vh] z-20 text-center px-6 will-change-transform pointer-events-none"
         >
-          <p className="text-[10px] md:text-xs uppercase tracking-[0.4em] text-[var(--burgundy)] mb-4 md:mb-6">
+          <p className="text-[10px] md:text-xs uppercase tracking-[0.4em] text-[var(--burgundy)] mb-3 md:mb-5">
             Salon · Academy · Est. 2014
           </p>
-          <h1 className="font-display text-[clamp(3rem,12vw,9rem)] leading-[0.9] text-balance">
+          <h1 className="font-display text-[clamp(2.5rem,11vw,8rem)] leading-[0.9] text-balance">
             Art You <em className="not-italic text-[var(--burgundy)]">Wear.</em>
           </h1>
         </div>
 
-        {/* Bottle (stage center) */}
-        <img
-          ref={bottleRef}
-          src={bottle}
-          alt="Luxury nail polish"
-          className="absolute left-1/2 top-[34vh] md:top-[36vh] z-30 w-[180px] sm:w-[220px] md:w-[300px] -translate-x-1/2 will-change-transform drop-shadow-[0_30px_40px_oklch(0.16_0.005_60/0.45)]"
-          style={{ transformOrigin: "top center" }}
-        />
-
-        {/* Drip stretching from bottle to hand */}
+        {/* Unified stage: bottle → drip → hand, all centered together */}
         <div
-          ref={dripRef}
-          aria-hidden
-          className="absolute left-1/2 top-[44vh] md:top-[48vh] z-20 -translate-x-1/2 origin-top will-change-transform"
+          ref={stageRef}
+          className="absolute left-1/2 -translate-x-1/2 bottom-0 z-30 flex flex-col items-center"
           style={{
-            width: "10px",
-            height: "55vh",
-            background:
-              "linear-gradient(to bottom, var(--burgundy) 0%, var(--wine) 60%, var(--burgundy) 100%)",
-            borderRadius: "999px",
-            boxShadow: "0 0 24px oklch(0.32 0.12 18 / 0.5)",
-            opacity: 0,
+            width: "min(420px, 85vw)",
+            height: "78vh",
+            top: "auto",
           }}
         >
+          {/* Bottle anchored at top of stage */}
           <img
-            src={drip}
-            alt=""
-            className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-10 md:w-14"
+            ref={bottleRef}
+            src={bottle}
+            alt="Luxury nail polish"
+            className="relative z-30 will-change-transform drop-shadow-[0_25px_35px_oklch(0.16_0.005_60/0.4)] select-none"
+            style={{
+              width: "clamp(140px, 32vw, 240px)",
+              transformOrigin: "50% 18%",
+            }}
           />
+
+          {/* Liquid stream (SVG fills the gap between bottle and hand) */}
+          <svg
+            className="relative z-20 -mt-2"
+            style={{ width: "24px", flex: 1 }}
+            viewBox="0 0 12 100"
+            preserveAspectRatio="none"
+            aria-hidden
+          >
+            <defs>
+              <linearGradient id="liq" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stopColor="oklch(0.42 0.16 20)" />
+                <stop offset="60%" stopColor="oklch(0.32 0.12 18)" />
+                <stop offset="100%" stopColor="oklch(0.28 0.13 18)" />
+              </linearGradient>
+              <radialGradient id="dropG" cx="0.4" cy="0.35" r="0.7">
+                <stop offset="0%" stopColor="oklch(0.55 0.16 20)" />
+                <stop offset="100%" stopColor="oklch(0.28 0.13 18)" />
+              </radialGradient>
+              <filter id="liqBlur" x="-20%" y="-5%" width="140%" height="110%">
+                <feGaussianBlur stdDeviation="0.25" />
+              </filter>
+            </defs>
+            {/* falling stream */}
+            <rect
+              ref={dripRef}
+              x="5"
+              y="0"
+              width="2"
+              height="0"
+              rx="1"
+              fill="url(#liq)"
+              filter="url(#liqBlur)"
+              style={{ opacity: 0 }}
+            />
+            {/* detached droplet (teardrop via path scaled) */}
+            <circle
+              ref={dropRef}
+              cx="6"
+              cy="8"
+              r="1.6"
+              fill="url(#dropG)"
+              style={{ opacity: 0, filter: "drop-shadow(0 1px 1px oklch(0.16 0.005 60 / 0.4))" }}
+            />
+            {/* splash on impact */}
+            <g ref={splashRef} style={{ opacity: 0, transformOrigin: "6px 100px" }}>
+              <ellipse cx="6" cy="99" rx="4" ry="0.8" fill="oklch(0.32 0.12 18 / 0.7)" />
+              <circle cx="3" cy="98" r="0.6" fill="oklch(0.42 0.16 20)" />
+              <circle cx="9" cy="98" r="0.5" fill="oklch(0.42 0.16 20)" />
+              <circle cx="7.5" cy="96.5" r="0.4" fill="oklch(0.42 0.16 20)" />
+            </g>
+          </svg>
         </div>
 
-        {/* Hand image rising from bottom */}
+        {/* Hand image rising from bottom (full width, behind drip endpoint) */}
         <div
           ref={handRef}
-          className="absolute inset-x-0 bottom-0 z-30 will-change-transform"
+          className="absolute inset-x-0 bottom-0 z-20 will-change-transform pointer-events-none"
           style={{ opacity: 0 }}
         >
           <img
             src={hand}
             alt="Burgundy manicure"
-            className="block w-full max-w-[900px] mx-auto select-none"
+            className="block w-full max-w-[700px] mx-auto select-none"
             style={{
-              maskImage:
-                "linear-gradient(to top, black 75%, transparent 100%)",
-              WebkitMaskImage:
-                "linear-gradient(to top, black 75%, transparent 100%)",
+              maskImage: "linear-gradient(to top, black 80%, transparent 100%)",
+              WebkitMaskImage: "linear-gradient(to top, black 80%, transparent 100%)",
             }}
           />
         </div>
@@ -184,30 +242,29 @@ export function Hero() {
         {/* End-of-intro CTA */}
         <div
           ref={ctaRef}
-          className="absolute inset-x-0 bottom-8 md:bottom-12 z-40 flex flex-col items-center gap-4 px-6 will-change-transform"
+          className="absolute inset-x-0 bottom-6 md:bottom-10 z-40 flex flex-col items-center gap-3 md:gap-4 px-6 will-change-transform"
           style={{ opacity: 0 }}
         >
-          <p className="text-sm md:text-base text-foreground/80 max-w-md text-center">
-            Premium nail artistry, beauty & academy training — crafted with couture precision.
+          <p className="text-xs md:text-base text-foreground/80 max-w-md text-center">
+            Premium nail artistry, beauty & academy training — couture precision.
           </p>
-          <div className="flex flex-wrap gap-3 justify-center">
+          <div className="flex flex-wrap gap-2 md:gap-3 justify-center">
             <a
               href="#contact"
-              className="bg-[var(--onyx)] text-[var(--ivory)] px-6 md:px-8 py-3 md:py-4 text-[10px] md:text-xs uppercase tracking-[0.25em] hover:bg-[var(--burgundy)] transition-colors"
+              className="bg-[var(--onyx)] text-[var(--ivory)] px-5 md:px-8 py-3 md:py-4 text-[10px] md:text-xs uppercase tracking-[0.25em] hover:bg-[var(--burgundy)] transition-colors"
             >
               Book Appointment
             </a>
             <a
               href="#academy"
-              className="border border-foreground/30 px-6 md:px-8 py-3 md:py-4 text-[10px] md:text-xs uppercase tracking-[0.25em] hover:border-[var(--burgundy)] hover:text-[var(--burgundy)] transition"
+              className="border border-foreground/30 px-5 md:px-8 py-3 md:py-4 text-[10px] md:text-xs uppercase tracking-[0.25em] hover:border-[var(--burgundy)] hover:text-[var(--burgundy)] transition"
             >
               Explore Academy
             </a>
           </div>
         </div>
 
-        {/* Scroll cue */}
-        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 text-[9px] md:text-[10px] uppercase tracking-[0.4em] text-foreground/40">
+        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-10 text-[9px] md:text-[10px] uppercase tracking-[0.4em] text-foreground/40">
           Scroll
         </div>
       </div>
