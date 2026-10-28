@@ -30,9 +30,7 @@ export function ScrollRevealHero() {
     if (reducedMotion) return;
 
     let killed = false;
-    let timeline: ReturnType<typeof gsapTimeline> | null = null;
-    type gsapTimeline = { scrollTrigger?: { kill(): void }; kill(): void };
-    let stModule: { ScrollTrigger: { refresh(): void } } | null = null;
+    let timeline: { scrollTrigger?: { kill(): void }; kill(): void } | null = null;
 
     const video = videoRef.current;
     const section = sectionRef.current;
@@ -53,7 +51,6 @@ export function ScrollRevealHero() {
       ]);
       if (killed) return;
       gsap.registerPlugin(ScrollTrigger);
-      stModule = { ScrollTrigger };
 
       // Wait for metadata so duration is known before mapping scroll → time.
       await new Promise<void>((resolve) => {
@@ -97,7 +94,7 @@ export function ScrollRevealHero() {
           onUpdate: (self) => setVideoTime(self.progress),
         },
       });
-      timeline = tl as unknown as gsapTimeline;
+      timeline = tl;
 
       // 0–10%: scroll hint fades; 10–28%: title lifts away.
       tl.to(hintRef.current, { opacity: 0, duration: 0.6, ease: "none" }, 0);
@@ -128,7 +125,6 @@ export function ScrollRevealHero() {
       video.removeEventListener("play", onStrayPlay);
       cleanupGsap?.();
       timeline = null;
-      stModule = null;
     };
   }, [reducedMotion]);
 
