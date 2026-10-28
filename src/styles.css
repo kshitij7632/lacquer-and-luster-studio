@@ -95,6 +95,35 @@
 @layer utilities {
   .font-display { font-family: var(--font-display); }
   .text-balance { text-wrap: balance; }
+  .hero-cta-primary {
+    background-color: var(--onyx);
+    color: var(--ivory);
+    padding: 0.75rem 1.25rem;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    transition: background-color 0.3s;
+  }
+  @media (min-width: 768px) {
+    .hero-cta-primary { padding: 1rem 2rem; font-size: 12px; }
+  }
+  .hero-cta-primary:hover { background-color: var(--burgundy); }
+  .hero-cta-secondary {
+    border: 1px solid oklch(0.16 0.005 60 / 0.3);
+    color: var(--foreground);
+    padding: 0.75rem 1.25rem;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    transition: color 0.3s, border-color 0.3s;
+  }
+  @media (min-width: 768px) {
+    .hero-cta-secondary { padding: 1rem 2rem; font-size: 12px; }
+  }
+  .hero-cta-secondary:hover {
+    border-color: var(--burgundy);
+    color: var(--burgundy);
+  }
   .grain {
     position: relative;
   }
