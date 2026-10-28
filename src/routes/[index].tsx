@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Hero } from "@/components/Hero";
+import { ScrollRevealHero } from "@/components/ScrollRevealHero";
 import { Sections } from "@/components/Sections";
 
 export const Route = createFileRoute("/index")({
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/index")({
 function IndexAlias() {
   return (
     <main className="relative bg-background text-foreground">
-      <Hero />
+      <ScrollRevealHero />
       <Sections />
     </main>
   );
